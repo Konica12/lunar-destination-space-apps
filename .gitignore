@@ -1,0 +1,7 @@
+node_modules/
+web/dist/
+dem/
+dl/
+__pycache__/
+*.pyc
+pipeline/build.log

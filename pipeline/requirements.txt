@@ -1,0 +1,7 @@
+numpy
+scipy
+spiceypy
+rasterio
+astropy
+jplephem<2
+de421

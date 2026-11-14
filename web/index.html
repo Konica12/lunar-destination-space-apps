@@ -1,0 +1,142 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>LunarDestination</title>
+<meta name="description" content="Stand on the Moon's south pole: compare landing sites and dates by Sun and Earth over the real terrain horizon.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 36 36%22%3E%3Ccircle cx=%2218%22 cy=%2218%22 r=%2215%22 fill=%22%230a0f1e%22 stroke=%22%23f5b841%22 stroke-width=%223%22/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="./src/style.css">
+</head>
+<body>
+<div class="space" aria-hidden="true"><canvas id="stars"></canvas><div class="nebula"></div></div>
+<header class="top">
+  <div class="brand">
+    <svg width="40" height="40" viewBox="0 0 40 40" aria-hidden="true"><defs><radialGradient id="lg" cx="35%" cy="35%" r="70%"><stop offset="0" stop-color="#e9e4d8"/><stop offset=".7" stop-color="#8a847a"/><stop offset="1" stop-color="#2a2622"/></radialGradient></defs><circle cx="20" cy="20" r="17" fill="url(#lg)"/><circle cx="13" cy="15" r="3" fill="#6d675f" opacity=".7"/><circle cx="25" cy="24" r="4.5" fill="#6d675f" opacity=".6"/><circle cx="20" cy="33" r="2.6" fill="#f5b841" stroke="#0b0d1a" stroke-width="1.5"/></svg>
+    <div>
+      <div class="brand-name">Lunar<span>Destination</span></div>
+      <div class="brand-sub">Where and when to land at the Moon's south pole · Team Khagolshastra</div>
+    </div>
+  </div>
+  <div class="top-actions">
+    <button type="button" id="live" class="btn ghost" aria-pressed="false"><span class="live-dot"></span>Live now</button>
+    <label class="switch"><input type="checkbox" id="explain"><span>Explain</span></label>
+    <button type="button" id="share" class="btn ghost">Copy link</button>
+    <button type="button" id="print" class="btn ghost">Print horizon</button>
+  </div>
+</header>
+
+<section class="controls" aria-label="Choose sites">
+  <div class="ctl sites-ctl">
+    <span class="ctl-label">Landing site <small>· tap a pin on the Moon or a name · up to 3 to compare</small></span>
+    <div id="site-chips" class="chips"></div>
+  </div>
+  <form id="custom-form" class="ctl custom" autocomplete="off">
+    <span class="ctl-label">Or enter coordinates</span>
+    <div class="row">
+      <label class="sr" for="c-lat">Latitude</label><input id="c-lat" type="number" step="0.001" min="-90" max="-60" placeholder="Lat −89.45" required>
+      <label class="sr" for="c-lon">Longitude</label><input id="c-lon" type="number" step="0.001" min="-180" max="360" placeholder="Lon −137.3" required>
+      <button type="submit" class="btn small">Add</button>
+    </div>
+  </form>
+  <div class="ctl">
+    <label class="ctl-label" for="mast">Solar panel height</label>
+    <select id="mast"><option value="2">2 m · lander</option><option value="10">10 m · mast</option><option value="20">20 m · tower</option></select>
+  </div>
+</section>
+
+<section class="ribbon-wrap p-date" aria-label="Choose dates">
+  <div class="ribbon-head">
+    <div><h2>When to land</h2><span class="muted" id="ribbon-sub">Each column is one day. Green days have both sunlight and Earth contact.</span></div>
+    <div class="row">
+      <button type="button" class="btn icon" id="prev" aria-label="Previous week">‹</button>
+      <label class="sr" for="date">Start date</label><input id="date" type="date">
+      <button type="button" class="btn icon" id="next" aria-label="Next week">›</button>
+      <label class="sr" for="days">Period</label>
+      <select id="days"><option value="7">7 days</option><option value="14" selected>14 days</option><option value="30">30 days</option></select>
+    </div>
+  </div>
+  <canvas id="ribbon" height="56" aria-label="Day-by-day quality over the whole data range; click to choose dates"></canvas>
+  <div class="ribbon-months" id="ribbon-months"></div>
+  <div id="suggest" class="suggest"></div>
+</section>
+
+<main class="stage">
+  <section class="globe-card p-moon" aria-label="The Moon">
+    <div id="globe"></div>
+    <div class="globe-cap"><b>The Moon now</b> <span id="globe-time" class="mono"></span><br><span class="muted">Lit by the real Sun. Drag to turn it, tap a pin to choose a site.</span></div>
+  </section>
+
+  <section class="view-card p-moon">
+    <div class="tabs" role="tablist">
+      <button role="tab" class="tab" data-tab="stand" aria-selected="true">Stand here</button>
+      <button role="tab" class="tab" data-tab="sky" aria-selected="false">Sky chart 360°</button>
+      <button role="tab" class="tab" data-tab="map" aria-selected="false">Terrain map</button>
+      <span class="tab-info" id="tab-info"></span>
+    </div>
+    <div class="panel" id="panel-stand">
+      <div id="stand"></div>
+      <div class="hud">
+        <div class="hud-top"><span id="heading" class="pill mono"></span></div>
+        <div class="hud-count" id="hud-count"></div>
+        <div class="hud-btns">
+          <button type="button" class="btn hud-btn" id="look-sun"><span class="ico sun"></span>Look at Sun</button>
+          <button type="button" class="btn hud-btn" id="look-earth"><span class="ico earth"></span>Look at Earth</button>
+          <button type="button" class="btn hud-btn" id="zoom" aria-pressed="false">Binoculars</button>
+        </div>
+        <div class="hud-hint muted">Drag to look around · scroll to zoom</div>
+      </div>
+    </div>
+    <div class="panel" id="panel-sky" hidden><svg id="sky" viewBox="0 0 1000 380" role="img" aria-label="Horizon chart"></svg></div>
+    <div class="panel" id="panel-map" hidden><canvas id="map" width="720" height="720"></canvas><div id="map-legend" class="legend"></div></div>
+  </section>
+
+  <section class="timebar p-date" aria-label="Time">
+    <button type="button" class="btn icon play" id="play" aria-label="Play">▶</button>
+    <div class="track">
+      <canvas id="tbar" height="38"></canvas>
+      <input type="range" id="time" min="0" max="335" value="0" aria-label="Time within period">
+    </div>
+    <output id="time-label" for="time" class="mono"></output>
+  </section>
+
+  <section class="elev-card p-sun" aria-label="Solar elevation">
+    <div class="elev-now" id="elev-now"></div>
+    <div class="elev-chart">
+      <canvas id="elev" height="170" aria-label="Solar elevation over the period compared with the terrain in the Sun's direction"></canvas>
+      <div class="legend"><span><i style="background:#f5b841"></i>Sun's elevation</span><span><i style="background:#56628a"></i>Terrain height in the Sun's direction</span><span><i style="background:rgba(245,184,65,.25)"></i>Sun clears the terrain (power)</span></div>
+    </div>
+    <p class="explain explain-strip">Solar elevation is how high the Sun stands above a flat horizon. At the south pole it stays within about ±1.5° of the horizon, plus a few degrees more for high sites, so a panel lying flat gets almost nothing: at 1.5° it catches under 3% of the sunlight. That is why polar landers use vertical panels that turn to follow the Sun. The grey line is the terrain in the Sun's direction; power is only possible when the gold line is above it.</p>
+  </section>
+
+  <section class="status" id="status" aria-live="polite"></section>
+  <section class="insights">
+    <div class="card p-earth" id="contrast"></div>
+    <div class="card p-terrain" id="sens"></div>
+  </section>
+</main>
+
+<section class="details">
+  <div class="card matrix p-date">
+    <div class="card-head"><h2>Every site, every month</h2><span class="muted">share of good days · click a square to open that site and its best window that month</span></div>
+    <div id="matrix-body" class="tablewrap"></div>
+  </div>
+  <div class="card compare p-terrain">
+    <div class="card-head"><h2>Compare scenarios</h2><div class="row"><span class="muted" id="compare-sub"></span><button type="button" id="pin" class="btn small">＋ Pin this site & dates</button></div></div>
+    <div id="compare-body"></div>
+  </div>
+  <div class="card windows p-earth">
+    <div class="card-head"><h2>Exact windows</h2><button type="button" id="csv" class="btn small ghost">Export CSV</button></div>
+    <div id="windows-body"></div>
+  </div>
+</section>
+
+<footer class="foot"><div id="sources"></div></footer>
+<div id="print-sheet" aria-hidden="true"></div>
+<div id="toast" role="status"></div>
+<script type="module" src="./src/main.js"></script>
+</body>
+</html>

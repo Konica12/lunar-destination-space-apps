@@ -1,0 +1,105 @@
+{
+ "generated": "khagolshastra pipeline",
+ "ephemeris": "JPL DE421 + moon_pa_de421 (MOON_ME)",
+ "sites": [
+  {
+   "id": "malapert-massif",
+   "name": "Malapert Massif",
+   "kind": "artemis",
+   "lat": -85.9531,
+   "lon": -3.3902,
+   "elev_m": 4960.5,
+   "terrain": true,
+   "ephem": "main",
+   "horizon_source": "LOLA polar DEM"
+  },
+  {
+   "id": "haworth",
+   "name": "Haworth",
+   "kind": "artemis",
+   "lat": -86.9898,
+   "lon": -24.2227,
+   "elev_m": 1785.6,
+   "terrain": true,
+   "ephem": "main",
+   "horizon_source": "LOLA polar DEM"
+  },
+  {
+   "id": "mons-mouton",
+   "name": "Mons Mouton",
+   "kind": "artemis",
+   "lat": -84.6398,
+   "lon": 25.3549,
+   "elev_m": 5388.4,
+   "terrain": true,
+   "ephem": "main",
+   "horizon_source": "LOLA polar DEM"
+  },
+  {
+   "id": "nobile-rim",
+   "name": "Nobile Rim",
+   "kind": "artemis",
+   "lat": -84.9101,
+   "lon": 38.1413,
+   "elev_m": 6799.8,
+   "terrain": true,
+   "ephem": "main",
+   "horizon_source": "LOLA polar DEM"
+  },
+  {
+   "id": "de-gerlache-rim",
+   "name": "de Gerlache Rim",
+   "kind": "artemis",
+   "lat": -88.6629,
+   "lon": -68.2869,
+   "elev_m": 1809.4,
+   "terrain": true,
+   "ephem": "main",
+   "horizon_source": "LOLA polar DEM"
+  },
+  {
+   "id": "slater-plain",
+   "name": "Slater Plain",
+   "kind": "artemis",
+   "lat": -87.4442,
+   "lon": 102.0303,
+   "elev_m": 242.7,
+   "terrain": true,
+   "ephem": "main",
+   "horizon_source": "LOLA polar DEM"
+  },
+  {
+   "id": "cabeus-b-peak",
+   "name": "Peak near Cabeus B",
+   "kind": "artemis",
+   "lat": -81.9319,
+   "lon": -47.7812,
+   "elev_m": 431.3,
+   "terrain": true,
+   "ephem": "main",
+   "horizon_source": "LOLA polar DEM"
+  },
+  {
+   "id": "shackleton-ridge",
+   "name": "Shackleton connecting ridge",
+   "kind": "classic",
+   "lat": -89.4368,
+   "lon": -137.3,
+   "elev_m": 1955.9,
+   "terrain": true,
+   "ephem": "main",
+   "horizon_source": "LOLA polar DEM"
+  },
+  {
+   "id": "chandrayaan-3",
+   "name": "Chandrayaan-3 (Shiv Shakti point)",
+   "kind": "mission",
+   "lat": -69.373,
+   "lon": 32.319,
+   "elev_m": 0.0,
+   "terrain": false,
+   "ephem": "chandrayaan-3",
+   "horizon_source": "none (smooth sphere)"
+  }
+ ]
+}
